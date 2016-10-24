@@ -2,9 +2,11 @@
 
 ## Description
 
-A TCP/UDP Telegraf/InfluxDB client for Twisted.
+A TCP/UDP Telegraf/InfluxDB client for Twisted using the Influx Line Format.
 
-Tested with Telegraf 1.0.1
+Tested with Telegraf 1.0.1 and Twisted 15.1.0 on Python 2.7.10.
+
+Please let me know success/failures testing with other versions of Telegraf/Influx, Twisted, and Python.
 
 ## How To
 
@@ -23,4 +25,13 @@ Add the following to your Telegraf config.
     allowed_pending_messages = 10000
     data_format = "influx"
 
-Read the example in `examples/client.py`.
+Run telegraf
+
+    telegraf -config telegraf.conf
+
+Clone the repo and run the example
+
+    git clone https://github.com/offero/txtelegraf.git
+    cd txtelegraf
+    pip install .
+    python examples/client.py
