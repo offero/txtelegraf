@@ -30,12 +30,12 @@ setup(
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
     long_description = read('README.md'),
-    packages = find_packages(),   # Find packages in the 'src' folder
-    # py_modules=["txtelegraf"],
+    packages = find_packages(),
     install_requires = ['twisted'],
     keywords="twisted telegraf influxdb",
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 4 - Beta',
+        # 'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: Apache Software License',
