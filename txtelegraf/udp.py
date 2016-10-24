@@ -1,5 +1,4 @@
 # coding: utf-8
-
 # Copyright 2016 Chris Kirkos
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from __future__ import (absolute_import, unicode_literals)
+
+import logging
 
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
 from twisted.internet.defer import succeed
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_HOST="127.0.0.1"
 DEFAULT_UDP_PORT=8092
@@ -30,11 +32,11 @@ class TelegrafUDPProtocol(DatagramProtocol):
         self.port = port
 
     def startProtocol(self):
-        print('<TelegrafUDPProtocol.startProtocol>')
+        logger.debug('<TelegrafUDPProtocol.startProtocol>')
         self.transport.connect(self.host, self.port)
 
     def write(self, s):
-        print('<TelegrafUDPProtocol.write>')
+        logger.debug('<TelegrafUDPProtocol.write>')
         return self.transport.write(s + b"\n")  # returns bytes sent
 
 class TelegrafUDPClient(object):
