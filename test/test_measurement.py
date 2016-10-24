@@ -34,15 +34,15 @@ def test_measurement():
     # quote in tag value
 
     m2 = Measurement(
-        name=r'some\thing"with=weird,chars',
-        tags={r'tag\1': r'tag\val=1'},
-        fields={r'string\field': 'quote"inside'},
+        name=r'something with=weird,chars',
+        tags={r'tag, 1': r'tagval=1'},
+        fields={r'string field': 'quote"inside'},
         time=10000000
     )
     expected_string = (
-        r'something\\thing"with=weird\,chars,'
-        r'tag\\1' '=' r'tag\val\=1'
-        r' string\\field' '=' r'"quote\"inside"'
+        r'something\ with=weird\,chars,'
+        r'tag\,\ 1' '=' r'tagval\=1'
+        r' string\ field' '=' r'"quote\"inside"'
         r' 10000000'
     )
     assert str(m2) == expected_string, "\nExpect:\t'%s'\nFound:\t'%s'" % (expected_string, str(m2))

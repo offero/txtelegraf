@@ -17,21 +17,39 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 import time
 from types import StringTypes
 
+single_slash = '\\'
+double_slash = r'\\'
+quote = '"'
+escaped_quote = r'\"'
+newline = '\n'
+escaped_newline = r'\n'
+equals = '='
+escaped_equals = r'\='
+comma = ','
+escaped_comma = r'\,'
+space = " "
+escaped_space = r"\ "
+
 def now_nano():
     return int(time.time() * 1e9)
 
-def format_tag_or_name(s):
-    s = s.replace(",", r"\,")
-    s = s.replace("\\", r"\\")
-    s = s.replace("=", r"\=")
-    s = s.replace(" ", r"\ ")
+def format_measurement_name(s):
+    s = s.replace(comma, escaped_comma)
+    s = s.replace(space, escaped_space)
     return s
+
+def format_tag(s):
+    s = s.replace(comma, escaped_comma)
+    # s = s.replace(single_slash, double_slash)
+    s = s.replace(equals, escaped_equals)
+    s = s.replace(space, escaped_space)
+    return s
+
+format_field_name = format_tag
 
 def format_field_value(v):
     if isinstance(v, StringTypes):
-        v = v.replace('"', '\"')
-        v = v.replace('\n', r'\n')
-        v = v.replace("\\", r"\\")
+        v = v.replace(quote, escaped_quote)
         return '"%s"' % v
     elif isinstance(v, bool):
         return v and 'T' or 'F'
@@ -43,14 +61,13 @@ def format_field_value(v):
         raise Exception("Invalid field. value: %s type: %s" % (v, type(v)))
 
 def format_tags(tags):
-    return ",".join(("%s=%s" % (format_tag_or_name(k), format_tag_or_name(v)) for (k, v) in sorted(tags.items())))
+    return ",".join(("%s=%s" % (format_tag(k), format_tag(v)) for (k, v) in sorted(tags.items())))
 
 def format_fields(fields):
-    return ",".join(("%s=%s" % (format_tag_or_name(k), format_field_value(v)) for (k, v) in sorted(fields.items())))
+    return ",".join(("%s=%s" % (format_field_name(k), format_field_value(v)) for (k, v) in sorted(fields.items())))
 
 class Measurement(object):
     """
-
     Field Values:
         Floats - by default, InfluxDB assumes all numerical field values are floats.
         Integers - append an i to the field value to tell InfluxDB to store the number as an integer.
@@ -70,6 +87,8 @@ class Measurement(object):
     double quotes "
 
     For best performance you should sort tags by key before sending them to the database.
+
+    ref:  https://docs.influxdata.com/influxdb/v1.0/write_protocols/line_protocol_tutorial/
     """
     __slots__ = ['name', 'tags', 'fields', 'time']
 
@@ -85,8 +104,8 @@ class Measurement(object):
         self.fields = fields or {}
         self.time = time or now_nano()
 
-    def __str__(self):
-        name = format_tag_or_name(self.name)
+    def __unicode__(self):
+        name = format_measurement_name(self.name)
         tags = format_tags(self.tags)
         fields = format_fields(self.fields)
         time = "%s" % self.time
@@ -96,3 +115,6 @@ class Measurement(object):
         element2 = time
 
         return " ".join((element0, element1, element2))
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
