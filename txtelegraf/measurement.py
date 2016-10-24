@@ -17,6 +17,8 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 import time
 from types import StringTypes
 
+# NOTE: Single slashes have bad edge cases in the parser.
+# We will strip them out.
 single_slash = '\\'
 double_slash = r'\\'
 quote = '"'
@@ -27,8 +29,9 @@ equals = '='
 escaped_equals = r'\='
 comma = ','
 escaped_comma = r'\,'
-space = " "
-escaped_space = r"\ "
+space = ' '
+escaped_space = r'\ '
+underscore = '_'
 
 def now_nano():
     return int(time.time() * 1e9)
@@ -36,12 +39,14 @@ def now_nano():
 def format_measurement_name(s):
     s = s.replace(comma, escaped_comma)
     s = s.replace(space, escaped_space)
+    s = s.replace(single_slash, underscore)
     return s
 
 def format_tag(s):
     s = s.replace(comma, escaped_comma)
     s = s.replace(equals, escaped_equals)
     s = s.replace(space, escaped_space)
+    s = s.replace(single_slash, underscore)
     return s
 
 format_field_name = format_tag
