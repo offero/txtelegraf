@@ -17,7 +17,7 @@ from __future__ import (absolute_import, unicode_literals)
 import logging
 
 from twisted.internet import reactor
-from twisted.internet.defer import inlineCallbacks, returnValue
+from twisted.internet.defer import inlineCallbacks, returnValue, Deferred, succeed
 from twisted.protocols.basic import LineOnlyReceiver
 from twisted.protocols import policies
 from twisted.internet.endpoints import TCP4ClientEndpoint
@@ -52,23 +52,41 @@ class TelegrafTCPClient(object):
         returnValue(proto.sendMeasurement(measurement))
 
     def close(self):
-        logger.debug('<TelegrafTCPClient.close')
-        return self.proto.transport.loseConnection()
+        logger.debug('<TelegrafTCPClient.close>')
+        return self.proto.close()
 
 class TelegrafTCPProtocol(LineOnlyReceiver, policies.TimeoutMixin, object):
+    delimiter = b'\n'
+
+    def __init__(self):
+        self.closed_d = None
+
+    def close(self):
+        """Returns a deferred that fires when the connection is closed."""
+        if self.connected == 0:
+            return succeed(0)
+
+        self.transport.loseConnection()
+        return self.closed_d
+
     def connectionMade(self):
-        logger.debug('<TelegrafProtocol.connectionMade>', self)
+        logger.debug('<TelegrafProtocol.connectionMade> %s', self)
+        self.closed_d = Deferred()
         self.connected = 1
         LineOnlyReceiver.connectionMade(self)
 
     def connectionLost(self, reason):
         self.connected = 0
-        logger.debug('<TelegrafProtocol.connectionLost>', reason, self)
+        self.closed_d.callback(0)
+        logger.debug('<TelegrafProtocol.connectionLost> %s %s', reason, self)
         LineOnlyReceiver.connectionLost(self)
 
     def sendMeasurement(self, measurement):
-        logger.debug('Sending', str(measurement))
+        logger.debug('Sending %s', str(measurement))
         return self.sendLine(str(measurement))
+
+    def lineReceived(self, line):
+        logger.debug("<TelegrafProtocol.lineReceived> %s", line)
 
     def logPrefix(self):
         return self.__class__.__name__

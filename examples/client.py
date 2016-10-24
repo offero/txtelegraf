@@ -18,6 +18,8 @@ from twisted.internet.defer import inlineCallbacks
 from txtelegraf import TelegrafTCPClient, TelegrafUDPClient, Measurement
 from twisted.internet.task import deferLater
 
+import logging
+
 def sendFailed(failure, measurement):
     print('<sendFailed>', failure, measurement)
 
@@ -37,18 +39,24 @@ def writeMeasurements(client):
         yield deferLater(reactor, 1, client.sendMeasurement, measurement)\
               .addErrback(sendFailed, measurement)
 
+    # yield deferLater(reactor, 1, lambda *args: None)
+
 def main():
     client = TelegrafTCPClient()
     # client = TelegrafUDPClient()
 
+    def closeClient(*args):
+        return client.close()
+
     def stopReactor(*args):
-        client.close()
-        reactor.stop()
+        return reactor.stop()
 
     writeMeasurements(client)\
+        .addCallbacks(closeClient, closeClient)\
         .addCallbacks(stopReactor, stopReactor)
 
     reactor.run()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     main()
