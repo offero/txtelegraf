@@ -104,6 +104,10 @@ class Measurement(object):
         self.fields = fields or {}
         self.time = time or now_nano()
 
+    def __repr__(self):
+        return "Measurement(name=%s, tags=%s, fields=%s, time=%s)" % \
+            (self.name, self.tags, self.fields, self.time)
+
     def __unicode__(self):
         name = format_measurement_name(self.name)
         tags = format_tags(self.tags)
