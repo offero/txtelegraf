@@ -18,7 +18,7 @@ import logging
 
 from twisted.internet.protocol import DatagramProtocol
 from twisted.internet import reactor
-from twisted.internet.defer import succeed
+from twisted.internet.defer import succeed, Deferred
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +30,25 @@ class TelegrafUDPProtocol(DatagramProtocol):
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
         self.host = host
         self.port = port
+        self.closed_d = None
 
     def startProtocol(self):
         logger.debug('<TelegrafUDPProtocol.startProtocol>')
+        self.closed_d = Deferred()
         self.transport.connect(self.host, self.port)
+
+    def stopProtocol(self):
+        logger.debug('<TelegrafUDPProtocol.stopProtocol>')
+        self.closed_d.callback(0)
 
     def write(self, s):
         logger.debug('<TelegrafUDPProtocol.write>')
         return self.transport.write(s + b"\n")  # returns bytes sent
+
+    def close(self):
+        self.transport.loseConnection()
+        return self.closed_d
+
 
 class TelegrafUDPClient(object):
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
@@ -59,4 +70,4 @@ class TelegrafUDPClient(object):
 
     def close(self):
         self.connected = 0
-        return self.proto.transport.loseConnection()
+        return self.proto.close()

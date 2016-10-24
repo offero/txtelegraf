@@ -13,12 +13,13 @@
 # limitations under the License.
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
+import sys
+import logging
+
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
 from txtelegraf import TelegrafTCPClient, TelegrafUDPClient, Measurement
 from twisted.internet.task import deferLater
-
-import logging
 
 def sendFailed(failure, measurement):
     print('<sendFailed>', failure, measurement)
@@ -39,11 +40,9 @@ def writeMeasurements(client):
         yield deferLater(reactor, 1, client.sendMeasurement, measurement)\
               .addErrback(sendFailed, measurement)
 
-    # yield deferLater(reactor, 1, lambda *args: None)
-
 def main():
-    client = TelegrafTCPClient()
-    # client = TelegrafUDPClient()
+    client = (len(sys.argv) > 1 and sys.argv[1] == 'udp' and TelegrafUDPClient())\
+                or TelegrafTCPClient()
 
     def closeClient(*args):
         return client.close()
