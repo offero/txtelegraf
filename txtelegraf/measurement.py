@@ -40,7 +40,6 @@ def format_measurement_name(s):
 
 def format_tag(s):
     s = s.replace(comma, escaped_comma)
-    # s = s.replace(single_slash, double_slash)
     s = s.replace(equals, escaped_equals)
     s = s.replace(space, escaped_space)
     return s
