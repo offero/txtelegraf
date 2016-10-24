@@ -46,3 +46,7 @@ def test_measurement():
         r' 10000000'
     )
     assert str(m2) == expected_string, "\nExpect:\t'%s'\nFound:\t'%s'" % (expected_string, str(m2))
+
+    m3 = eval(repr(m2))
+    assert m3.name == m2.name
+    assert m3.tags == m2.tags

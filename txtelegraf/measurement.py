@@ -104,7 +104,7 @@ class Measurement(object):
         self.time = time or now_nano()
 
     def __repr__(self):
-        return "Measurement(name=%s, tags=%s, fields=%s, time=%s)" % \
+        return 'Measurement(name="%s", tags=%s, fields=%s, time=%s)' % \
             (self.name, self.tags, self.fields, self.time)
 
     def __unicode__(self):
