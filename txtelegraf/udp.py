@@ -1,0 +1,60 @@
+# coding: utf-8
+
+# Copyright 2016 Chris Kirkos
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from __future__ import (absolute_import, unicode_literals)
+
+from twisted.internet.protocol import DatagramProtocol
+from twisted.internet import reactor
+from twisted.internet.defer import succeed
+
+DEFAULT_HOST="127.0.0.1"
+DEFAULT_UDP_PORT=8092
+
+class TelegrafUDPProtocol(DatagramProtocol):
+
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
+        self.host = host
+        self.port = port
+
+    def startProtocol(self):
+        print('<TelegrafUDPProtocol.startProtocol>')
+        self.transport.connect(self.host, self.port)
+
+    def write(self, s):
+        print('<TelegrafUDPProtocol.write>')
+        return self.transport.write(s + b"\n")  # returns bytes sent
+
+class TelegrafUDPClient(object):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
+        self.host = host
+        self.port = port
+        self.proto = None
+        self.connected = 0
+
+    def getConnection(self):
+        if not self.connected:
+            self.proto = TelegrafUDPProtocol(self.host, self.port)
+            reactor.listenUDP(0, self.proto)
+            self.connected = 1
+
+    def sendMeasurement(self, measurement):
+        self.getConnection()
+        self.proto.write(str(measurement))
+        return succeed(1)
+
+    def close(self):
+        self.connected = 0
+        return self.proto.transport.loseConnection()
