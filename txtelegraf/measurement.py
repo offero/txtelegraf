@@ -37,16 +37,16 @@ def now_nano():
     return int(time.time() * 1e9)
 
 def format_measurement_name(s):
+    s = s.replace(single_slash, underscore)
     s = s.replace(comma, escaped_comma)
     s = s.replace(space, escaped_space)
-    s = s.replace(single_slash, underscore)
     return s
 
 def format_tag(s):
+    s = s.replace(single_slash, underscore)
     s = s.replace(comma, escaped_comma)
     s = s.replace(equals, escaped_equals)
     s = s.replace(space, escaped_space)
-    s = s.replace(single_slash, underscore)
     return s
 
 format_field_name = format_tag
