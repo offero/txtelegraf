@@ -55,6 +55,7 @@ def format_field_value(v):
     if isinstance(v, StringTypes):
         v = v.replace(quote, escaped_quote)
         return '"%s"' % v
+    # before the int check because bools are ints and ints are not bools
     elif isinstance(v, bool):
         return v and 'T' or 'F'
     elif isinstance(v, (int, long)):
