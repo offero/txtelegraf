@@ -25,6 +25,11 @@ Add the following to your Telegraf config.
     allowed_pending_messages = 10000
     data_format = "influx"
 
+    # This output is good for testing. Point it at Influx DB otherwise!
+    [[outputs.file]]
+    files = ["stdout", "metrics.out"]
+    data_format = "influx"
+
 Run telegraf
 
     telegraf -config telegraf.conf
