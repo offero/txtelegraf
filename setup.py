@@ -15,7 +15,7 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from setuptools import setup, find_packages
+from setuptools import setup
 from os.path import join as pathjoin, dirname
 
 def read(*rnames):
@@ -27,15 +27,15 @@ setup(
     author = "Chris Kirkos",
     author_email = "offero@gmail.com",
     url = "https://github.com/offero/txtelegraf",
+    download_url = 'https://github.com/offero/txtelegraf/tarball/0.1.0',
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
     long_description = read('README.md'),
-    packages = find_packages(),
+    packages = ['txtelegraf'],
     install_requires = ['twisted'],
-    keywords="twisted telegraf influxdb",
+    keywords=["twisted", "telegraf", "influxdb"],
     classifiers=[
         'Development Status :: 4 - Beta',
-        # 'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: Apache Software License',
