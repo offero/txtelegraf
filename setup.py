@@ -30,7 +30,7 @@ setup(
     download_url = 'https://github.com/offero/txtelegraf/tarball/0.1.0',
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
-    long_description = read('README.md'),
+    long_description = read('README.rst'),
     packages = ['txtelegraf'],
     install_requires = ['twisted'],
     keywords=["twisted", "telegraf", "influxdb"],
