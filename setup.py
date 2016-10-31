@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup(
     name = 'txtelegraf',
-    version = '0.1.0',
+    version = '0.1.1',
     author = "Chris Kirkos",
     author_email = "offero@gmail.com",
     url = "https://github.com/offero/txtelegraf",
