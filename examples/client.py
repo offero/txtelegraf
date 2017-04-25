@@ -43,6 +43,7 @@ def writeMeasurements(client):
 def main():
     client = (len(sys.argv) > 1 and sys.argv[1] == 'udp' and TelegrafUDPClient())\
                 or TelegrafTCPClient()
+    print("Using client", client.__class__.__name__)
 
     def closeClient(*args):
         return client.close()
