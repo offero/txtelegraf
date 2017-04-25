@@ -67,4 +67,5 @@ class TelegrafUDPClient(object):
         return succeed(1)
 
     def close(self):
+        self.proto.transport.loseConnection()
         return succeed(1)
