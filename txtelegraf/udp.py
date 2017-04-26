@@ -55,19 +55,18 @@ class TelegrafUDPClient(object):
         self.host = host
         self.port = port
         self.proto = None
-        self.connected = 0
 
     def getConnection(self):
-        if not self.connected:
-            self.proto = TelegrafUDPProtocol(self.host, self.port)
+        if self.proto is None:
+            self.proto = DatagramProtocol()
             reactor.listenUDP(0, self.proto)
-            self.connected = 1
 
     def sendMeasurement(self, measurement):
         self.getConnection()
-        self.proto.write(str(measurement))
+        self.proto.transport.write(str(measurement), (self.host, self.port))
         return succeed(1)
 
     def close(self):
-        self.connected = 0
-        return self.proto.close()
+        if self.proto is not None:
+            self.proto.transport.loseConnection()
+        return succeed(1)
