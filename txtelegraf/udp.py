@@ -15,58 +15,34 @@
 from __future__ import (absolute_import, unicode_literals)
 
 import logging
+import socket
 
-from twisted.internet.protocol import DatagramProtocol
-from twisted.internet import reactor
-from twisted.internet.defer import succeed, Deferred
+from twisted.internet.defer import succeed
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_HOST="127.0.0.1"
 DEFAULT_UDP_PORT=8092
 
-class TelegrafUDPProtocol(DatagramProtocol):
-
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
-        self.host = host
-        self.port = port
-        self.closed_d = None
-
-    def startProtocol(self):
-        logger.debug('<TelegrafUDPProtocol.startProtocol>')
-        self.closed_d = Deferred()
-        self.transport.connect(self.host, self.port)
-
-    def stopProtocol(self):
-        logger.debug('<TelegrafUDPProtocol.stopProtocol>')
-        self.closed_d.callback(0)
-
-    def write(self, s):
-        logger.debug('<TelegrafUDPProtocol.write>')
-        return self.transport.write(s + b"\n")  # returns bytes sent
-
-    def close(self):
-        self.transport.loseConnection()
-        return self.closed_d
-
-
 class TelegrafUDPClient(object):
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT):
+    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_UDP_PORT, blocking=False):
         self.host = host
         self.port = port
-        self.proto = None
+        self.blocking = blocking
+        self.s = None
 
     def getConnection(self):
-        if self.proto is None:
-            self.proto = DatagramProtocol()
-            reactor.listenUDP(0, self.proto)
+        if self.s is None:
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.s.setblocking(self.blocking)
+        return self.s
 
     def sendMeasurement(self, measurement):
-        self.getConnection()
-        self.proto.transport.write(str(measurement), (self.host, self.port))
+        self.getConnection().sendto(str(measurement), (self.host, self.port))
         return succeed(1)
 
     def close(self):
-        if self.proto is not None:
-            self.proto.transport.loseConnection()
+        if self.s is not None:
+            self.s.close()
+            self.s = None
         return succeed(1)
