@@ -23,11 +23,11 @@ def read(*rnames):
 
 setup(
     name = 'txtelegraf',
-    version = '0.2.0',
+    version = '0.2.1',
     author = "Christopher Kirkos",
     author_email = "offero@gmail.com",
     url = "https://github.com/offero/txtelegraf",
-    download_url = 'https://github.com/offero/txtelegraf/tarball/0.2.0',
+    download_url = 'https://github.com/offero/txtelegraf/tarball/0.2.1',
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
     long_description = read('README.rst'),
