@@ -46,7 +46,8 @@ class TelegrafUDPProtocol(DatagramProtocol):
         return self.transport.write(s + b"\n")  # returns bytes sent
 
     def close(self):
-        self.transport.loseConnection()
+        if self.transport is not None:
+            self.transport.loseConnection()
         return self.closed_d
 
 
@@ -67,6 +68,6 @@ class TelegrafUDPClient(object):
         return succeed(1)
 
     def close(self):
-        if self.proto is not None:
+        if self.proto is not None and self.proto.transport is not None:
             self.proto.transport.loseConnection()
         return succeed(1)
