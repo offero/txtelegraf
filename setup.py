@@ -27,7 +27,7 @@ setup(
     author = "Christopher Kirkos",
     author_email = "offero@gmail.com",
     url = "https://github.com/offero/txtelegraf",
-    download_url = 'https://github.com/offero/txtelegraf/tarball/0.2.1',
+    download_url = 'https://github.com/offero/txtelegraf/archive/v0.2.1.zip',
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
     long_description = read('README.rst'),
