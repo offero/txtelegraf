@@ -33,6 +33,7 @@ def test_measurement():
     # quote in tag name
     # quote in tag value
 
+def test_measurement_escape_chars():
     m2 = Measurement(
         name=r'something with=weird,chars',
         tags={r'tag, 1': r'tagval=1'},
@@ -50,3 +51,18 @@ def test_measurement():
     m3 = eval(repr(m2))
     assert m3.name == m2.name
     assert m3.tags == m2.tags
+
+def test_measurement_no_tags():
+    m4 = Measurement(
+        name="metric-name",
+        tags={},
+        fields={"integer_field": 10, "float_field": 10.0,
+                "boolean_field": True, "string_field": "yoohoo"}
+    )
+    assert m4.time is not None
+
+    expected_prefix = (
+            'metric-name'
+            ' boolean_field=T,float_field=10.0,integer_field=10i,'
+            'string_field="yoohoo"')
+    assert str(m4).startswith(expected_prefix), "Expected: '%s' \nFound: '%s'" % (expected_prefix, str(m4))

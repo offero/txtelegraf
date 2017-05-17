@@ -119,7 +119,7 @@ class Measurement(object):
         fields = format_fields(self.fields)
         time = "%s" % self.time
 
-        element0 = ",".join((name, tags))
+        element0 = ','.join((name, tags)) if tags else name
         element1 = fields
         element2 = time
 
