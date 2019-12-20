@@ -64,7 +64,7 @@ class TelegrafUDPClient(object):
 
     def sendMeasurement(self, measurement):
         self.getConnection()
-        self.proto.transport.write(str(measurement), (self.host, self.port))
+        self.proto.transport.write(bytes(measurement), (self.host, self.port))
         return succeed(1)
 
     def close(self):

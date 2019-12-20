@@ -83,7 +83,7 @@ class TelegrafTCPProtocol(LineOnlyReceiver, policies.TimeoutMixin, object):
 
     def sendMeasurement(self, measurement):
         logger.debug('Sending %s', str(measurement))
-        return self.sendLine(str(measurement))
+        return self.sendLine(bytes(measurement))
 
     def lineReceived(self, line):
         logger.debug("<TelegrafProtocol.lineReceived> %s", line)

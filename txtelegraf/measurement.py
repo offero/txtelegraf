@@ -128,3 +128,6 @@ class Measurement(object):
 
     def __str__(self):
         return self.__unicode__()
+
+    def __bytes__(self):
+        return self.__unicode__().encode('utf-8')
