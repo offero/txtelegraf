@@ -23,16 +23,16 @@ def read(*rnames):
 
 setup(
     name = 'txtelegraf',
-    version = '0.2.2',
+    version = '0.3.0',
     author = "Christopher Kirkos",
     author_email = "offero@gmail.com",
     url = "https://github.com/offero/txtelegraf",
-    download_url = 'https://github.com/offero/txtelegraf/archive/v0.2.2.zip',
+    download_url = 'https://github.com/offero/txtelegraf/archive/v0.3.0.zip',
     license="Apache License 2.0",
     description = "A TCP/UDP Telegraf/InfluxDB client for Twisted.",
     long_description = read('README.rst'),
     packages = [str('txtelegraf')],
-    install_requires = ['twisted'],
+    install_requires = ['twisted', 'six'],
     keywords=["twisted", "telegraf", "influxdb"],
     classifiers=[
         'Development Status :: 4 - Beta',
