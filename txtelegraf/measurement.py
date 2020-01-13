@@ -15,7 +15,8 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import time
-from types import StringTypes
+
+import six
 
 # NOTE: Single slashes have bad edge cases in the parser.
 # We will strip them out.
@@ -52,13 +53,13 @@ def format_tag(s):
 format_field_name = format_tag
 
 def format_field_value(v):
-    if isinstance(v, StringTypes):
+    if isinstance(v, six.string_types):
         v = v.replace(quote, escaped_quote)
         return '"%s"' % v
     # before the int check because bools are ints and ints are not bools
     elif isinstance(v, bool):
         return v and 'T' or 'F'
-    elif isinstance(v, (int, long)):
+    elif isinstance(v, six.integer_types):
         return '%di' % v
     elif isinstance(v, float):
         return str(v)
@@ -126,4 +127,7 @@ class Measurement(object):
         return " ".join((element0, element1, element2))
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return self.__unicode__()
+
+    def __bytes__(self):
+        return self.__unicode__().encode('utf-8')
